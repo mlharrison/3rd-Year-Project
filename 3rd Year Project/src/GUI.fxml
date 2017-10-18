@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #8FD8E6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button layoutX="271.0" layoutY="320.0" mnemonicParsing="false" text="Start" />
+      <Label alignment="CENTER" layoutX="120.0" layoutY="10.0" text="Sudoku Solver Version 1" underline="true">
+         <font>
+            <Font name="Apple Chancery" size="36.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="300.0" fitWidth="300.0" layoutX="145.0" layoutY="86.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="/Images/Sudoku.jpg" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
