@@ -6,148 +6,141 @@ import java.util.*;
  */
 public class Board {
 
-	public boolean check;
 	public Stack<Queen> queenStack;
-	public Iterator<Queen> iterator;
-	public int tempVarLeft, tempVarRight, size;
 
 	/**
 	 * 
 	 * Constructor for a new board
-	 * 
-	 * @param size
-	 *            of the board size x size
 	 */
-	public Board(int size) {
+	public Board() {
 
-		this.size = size;
 		queenStack = new Stack<>();
+
 	}
 
 	/**
-	 * getter for the size variable
+	 * Takes a Queen object, iterates over the matrix whilst comparing the current
+	 * value against the same value in the arraylist of the queen, adding the value
+	 * to a temp arraylist if not found.
 	 * 
-	 * @return size
-	 */
-	public int getSize() {
-
-		return this.size;
-	}
-
-	/**
-	 * Creates a new Queen object with a set y co-ordinate and checks for other
-	 * threatening queens whilst advancing the x co-ordinate if a threat is found.
+	 * The temp list is then added to the matrix and set as the arraylist values for
+	 * that queen and then the queen is added to the stack
 	 * 
-	 * @param row
-	 *            the current row the queen is set on
-	 * @return true if the queen can be placed on that row or false if not.
+	 * 
 	 */
-	public boolean placeQueen(int row) {
+	public boolean addQueen() {
 
-		Queen temp = new Queen(1, row, this.size);
+		Queen temp = new Queen(queenStack.size());
 
 		if (queenStack.isEmpty()) {
-			queenStack.push(temp);
+
+			addStackQueen(temp);
 			return true;
+
 		} else {
 
-			for (int i = 2; i <= this.size; i++) {
+			for (int i = temp.getX() + 1; i <= 7; i++) {
 
-				if (checkThreat(temp) == false) {
-					queenStack.push(temp);
+				temp.setX(i);
+				temp.setPos(i, queenStack.size());
+
+				if (checkQueenThreat(temp) != null) {
+					addStackQueen(temp);
 					return true;
 
 				}
 
 			}
-
-		}
-
-		return false;
-
-	}
-
-	/**
-	 * Checks if a queen is threatened by any other on the board
-	 * 
-	 * @param subject
-	 *            queen to test again
-	 * @return true if it is threatened , false if not
-	 */
-	public boolean checkThreat(Queen subject) {
-
-		Boolean collision = null;
-
-		for (int j = 1; j <= size; j++) {
-
-			subject.setX(j);
-			subject.setPos(size);
-			for (Queen i : queenStack) {
-				tempVarLeft = subject.getPos();
-				tempVarRight = subject.getPos();
-				if (i.getX() == subject.getX()) {
-					collision = true;
-				}else {
-				while (tempVarLeft > 1 && tempVarRight > 1) {
-
-					tempVarLeft = tempVarLeft - 9;
-					tempVarRight = tempVarRight - 7;
-
-					if (i.getPos() == tempVarLeft || i.getPos() == tempVarRight) {
-
-						collision = true;
-					}
-				}
-				}
-			}
-		}
-		if (collision == true) {
-
-			return true;
-		} else {
 			return false;
 		}
 
 	}
 
-	public void printBoard() {
+	public boolean addQueenRemoved(Queen removed) {
 
-		if (queenStack.isEmpty()) {
+		if (removed.getX() == 7) {
 
-			System.out.print("Nothing to print\n");
+			addQueenRemoved(removeStackQueen());
 		}
 
-		for (int k = 1; k <= this.size; k++) {
+		for (int i = removed.getX() + 1; i <= 7; i++) {
 
-			for (int h = 1; h <= this.size; h++) {
-				boolean check = false;
-				for (Queen x : queenStack) {
+			removed.setX(i);
+			removed.setPos(removed.getX(), queenStack.size());
 
-					if (x.getX() == h && x.getY() == k) {
+			if (checkQueenThreat(removed) != null) {
+				addStackQueen(removed);
+				return true;
 
-						System.out.print("X");
-
-						check = true;
-
-					}
-
-				}
-				if (check == false) {
-					System.out.print("O");
-
-				}
 			}
-			System.out.print("\n");
+
+		}
+		addQueenRemoved(removeStackQueen());
+		return false;
+	}
+
+	public void playGame() {
+
+		while (queenStack.size() < 8) {
+
+			if (addQueen() == false) {
+
+				addQueenRemoved(removeStackQueen());
+
+			}
 
 		}
 	}
 
+	public void addStackQueen(Queen queen) {
+
+		queenStack.push(queen);
+
+	}
+
+	public Queen removeStackQueen() {
+
+		return queenStack.pop();
+	}
+
+	/**
+	 * Checks if a queen is threatened by any other on the board
+	 * 
+	 * @param queen
+	 *            to test again
+	 * @return true if it is threatened , false if not
+	 */
+	public Queen checkQueenThreat(Queen inputQueen) {
+
+		int tempVarLeft = (inputQueen.getPos() - 9);
+		int tempVarRight = (inputQueen.getPos() - 7);
+		int tempVarUp = (inputQueen.getPos() - 8);
+
+		for (int i = queenStack.size() - 1; i >= 0; i--) {
+
+			if (queenStack.elementAt(i).getPos() == tempVarUp || queenStack.elementAt(i).getPos() == tempVarLeft
+					|| queenStack.elementAt(i).getPos() == tempVarRight) {
+
+				return null;
+
+			}
+			tempVarLeft = (tempVarLeft - 9);
+			tempVarRight = (tempVarRight - 7);
+			tempVarUp = (tempVarUp - 8);
+
+		}
+		return inputQueen;
+
+	}
+
+	/**
+	 * prints the values in the stack
+	 */
 	public void printStack() {
 
 		for (Queen x : queenStack) {
 
-			x.printStatus();
-
+			x.toString();
 		}
 
 	}
